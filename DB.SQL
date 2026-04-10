@@ -4,3 +4,29 @@ contraseña VARCHAR(50) → VARCHAR(255). Las contraseñas nunca se guardan en t
 VARCHAR(50) en descripciones → VARCHAR(255). 50 caracteres es muy poco para descripciones reales. 255 es el estándar habitual.
 Relaciones con REFERENCES. Añadí usuario_id en comentarios y recomendaciones para que tengan sentido: un comentario y una recomendación pertenecen a un usuario. El ON DELETE CASCADE significa que si borras un usuario, sus comentarios y recomendaciones se borran también automáticamente.
 DEFAULT 'pendiente' en estado. Un valor por defecto útil para que no queden registros sin estado al insertarlos.
+
+
+CREATE TABLE usuario (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    contraseña VARCHAR(255) NOT NULL  -- más largo para almacenar hashes
+);
+
+CREATE TABLE comentarios (
+    id SERIAL PRIMARY KEY,
+    descripcion VARCHAR(255),
+    usuario_id INT REFERENCES usuario(id) ON DELETE CASCADE
+);
+
+CREATE TABLE recomendaciones (
+    id SERIAL PRIMARY KEY,
+    descripcion VARCHAR(255),
+    estado VARCHAR(50) DEFAULT 'pendiente',
+    usuario_id INT REFERENCES usuario(id) ON DELETE CASCADE
+);
+
+CREATE TABLE trabajadores (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    funcion VARCHAR(50)
+);
