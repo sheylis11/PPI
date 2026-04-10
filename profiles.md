@@ -21,3 +21,11 @@ b)¿A que tablas tiene acceso?
 -tiene acceso a todas las tablas
 c)¿que infirmacion puedo:crear,actualizar,leer,y eliminar?
 -crear,leer,utilizar,actualizar,eliminar
+
+4)USUARIOS:
+a)¿se loguean?
+-Si se loguea ya que hay que poner id,nombre y contraceña
+b)¿A que tablas tiene acceso?
+-tiene acceso a la tabla de comentarios y recomendaciones
+c)¿que infirmacion puedo:crear,actualizar,leer,y eliminar?
+leer,utilizar,actualizar,eliminar
