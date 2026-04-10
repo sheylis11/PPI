@@ -1,0 +1,41 @@
+1) COMENTARIOS 
+a) ¿Se loguean al sistema? 
+si se loguean ya que tienen que utilizar su id
+b) ¿ a que tablas tienen acceso?
+las tablas serian las de comentarios y recomendaciones
+c) ¿que informacion pueden: crear, actualizar, leer y eliminar?
+crear, leer, utilizar, actualizar y eliminar 
+
+2) RECOMENDACIONES
+a) ¿se loguean?
+si se loguean ya que utiliza su id 
+b) ¿a que tablas tienen acceso?
+las tablas serian las de comentarios y recomendaciones
+c) ¿que informacion pueden: crear, actualizar, leer y eliminar?
+crear, leer, utilizar, actualizar y eliminar
+
+3) TRABAJADORES 
+a) ¿se loguean?
+Si, ya que tiene que poner su id, nombre y su funcion
+b) ¿a que tablas tienen acceso?
+tiene acceso a todas las tablas 
+c) ¿que informacion pueden: crear, actualizar, leer y eliminar?
+crear, leer, utilizar, actualizar, eliminar
+
+4) USUARIOS 
+a) ¿se loguean?
+Si se loguea ya que tiene que poner su id,nombre y contraseña 
+b) ¿a que tablas tienen acceso?
+tienen acceson a las tablas de comentarios y recomendaciones 
+c) ¿que informacion pueden: crear, actualizar, leer y eliminar?
+actualizar, leer y eliminar
+
+
+
+
+
+
+
+
+
+
