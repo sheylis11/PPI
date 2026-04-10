@@ -1,23 +1,32 @@
-1). COMENTARIOS:
+1). USUARIOS:
 a). ¿Se loguean?
-Si, si se loguean ya que tienen que utilizar su id.
+-Si se loguean ya que hay que poner su id, nombre y contraseña.
 b). ¿A que tablas tienen acceso?
-Tienen acceso a tabla de comentarios y recomendaciones.
+-Tienen acceso a las tablas de comentarios y recomendaciones.
 c). ¿Qué información pueden: crear, actualizar, leer y eliminar?
-Crear, leer, utilizar, actualizarla y eliminarla.
+-Leer, actualizar, eliminar y utilizar.
 
-2). RECOMENDACDIONES:
-a). ¿Se loguean?
-Si se loguean ya que utiliza su id.
-b). ¿A que tablas tienen acceso?
-Tienen acceso a tabla de recomendaciones y comentarios.
-c). ¿Qué información pueden: crear, actualizar, leer y eliminar?
-Crear, leer, actualizar, utilizar y eliminar.
 
-2). TRABAJADORES:
+2). COMENTARIOS:
 a). ¿Se loguean?
-Si ya que tienen que poner su id, su nombre y su función.
+-Si, si se loguean ya que tienen que utilizar su id.
 b). ¿A que tablas tienen acceso?
-Tienen acceso a todas las tablas.
+-Tienen acceso a tabla de comentarios y recomendaciones.
 c). ¿Qué información pueden: crear, actualizar, leer y eliminar?
-Crear, leer, actualizar, utilizar y eliminar.
+-Crear, leer, utilizar, actualizarla y eliminarla.
+
+3). RECOMENDACDIONES:
+a). ¿Se loguean?
+-Si se loguean ya que utiliza su id.
+b). ¿A que tablas tienen acceso?
+-Tienen acceso a tabla de recomendaciones y comentarios.
+c). ¿Qué información pueden: crear, actualizar, leer y eliminar?
+-Crear, leer, actualizar, utilizar y eliminar.
+
+4). TRABAJADORES:
+a). ¿Se loguean?
+-Si ya que tienen que poner su id, su nombre y su función.
+b).¿A que tablas tienen acceso?
+-Tienen acceso a todas las tablas.
+c). ¿Qué información pueden: crear, actualizar, leer y eliminar?
+-Crear, leer, actualizar, utilizar y eliminar.
