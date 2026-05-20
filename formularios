@@ -1,0 +1,184 @@
+import React, { useState } from "react";
+
+function FormularioUsuario() {
+
+  const [nombre, setNombre] = useState("");
+  const [dni, setDni] = useState("");
+  const [contrasena, setContrasena] = useState("");
+  const [usuarios, setUsuarios] = useState([]);
+
+  const guardar = () => {
+    const nuevoUsuario = { nombre, dni, contrasena };
+    setUsuarios([...usuarios, nuevoUsuario]);
+    alert("Usuario guardado 💚");
+  };
+
+  const ver = () => {
+    console.log(usuarios);
+    alert("Revisa la consola para ver los usuarios");
+  };
+
+  const eliminar = () => {
+    setUsuarios([]);
+    alert("Usuarios eliminados");
+  };
+
+  const modificar = () => {
+    if (usuarios.length > 0) {
+      const copia = [...usuarios];
+      copia[0] = { nombre, dni, contrasena };
+      setUsuarios(copia);
+      alert("Primer usuario modificado");
+    }
+  };
+
+  return (
+    <div>
+
+      {/* 🔝 MENÚ */}
+      <header style={styles.menu}>
+        <h1>MetroMed 💚</h1>
+
+        <nav style={styles.nav}>
+          <a href="#">Inicio</a>
+          <a href="#">Apoyo</a>
+          <a href="#">Contacto</a>
+        </nav>
+      </header>
+
+      {/* 🧠 CONTENIDO */}
+      <div style={styles.container}>
+        <h2>Bienvenido 💚</h2>
+
+        <p>
+          Si estás pasando por un momento difícil,
+          aquí puedes encontrar apoyo 💚
+        </p>
+
+        <input
+          type="text"
+          placeholder="Nombre"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          style={styles.input}
+        />
+
+        <input
+          type="text"
+          placeholder="DNI"
+          value={dni}
+          onChange={(e) => setDni(e.target.value)}
+          style={styles.input}
+        />
+
+        <input
+          type="password"
+          placeholder="Contraseña"
+          value={contrasena}
+          onChange={(e) => setContrasena(e.target.value)}
+          style={styles.input}
+        />
+
+        <div>
+          <button onClick={guardar} style={styles.boton}>Guardar</button>
+          <button onClick={modificar} style={styles.boton}>Modificar</button>
+          <button onClick={eliminar} style={styles.boton}>Eliminar</button>
+          <button onClick={ver} style={styles.boton}>Ver</button>
+        </div>
+      </div>
+
+      {/* 🔻 FOOTER */}
+      <footer style={styles.footer}>
+        <p>💚 Proyecto de Salud Mental - Metro de Medellín</p>
+
+        <p style={styles.creditos}>
+          Creado por:<br />
+          Roxelys Bravo Castro<br />
+          Dana Sofia Gomez<br />
+          Sheyla Tirado Aguiar
+        </p>
+
+        <div style={styles.info}>
+          <p><strong>📍 Dirección:</strong><br />
+          Cra. 51a #46, La Candelaria, Medellín, Antioquia</p>
+
+          <p><strong>⏰ Horario:</strong><br />
+          8:00 am - 3:00 pm</p>
+
+          <p><strong>📞 Teléfonos:</strong><br />
+          3045217695<br />
+          3044175431<br />
+          3128733990</p>
+
+          <p><strong>🚉 Estaciones cercanas:</strong><br />
+          Niquía, Acevedo, San Antonio, Industriales, La Estrella</p>
+        </div>
+
+        <p style={{ marginTop: "15px" }}>
+          Recuerda: no estás solo, siempre hay ayuda disponible 💚
+        </p>
+      </footer>
+
+    </div>
+  );
+}
+
+const styles = {
+  menu: {
+    backgroundColor: "#2E7D32",
+    color: "white",
+    padding: "15px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+
+  nav: {
+    display: "flex",
+    gap: "15px"
+  },
+
+  container: {
+    textAlign: "center",
+    marginTop: "50px",
+    fontFamily: "Arial"
+  },
+
+  input: {
+    display: "block",
+    margin: "10px auto",
+    padding: "10px",
+    width: "250px"
+  },
+
+  boton: {
+    margin: "5px",
+    padding: "10px",
+    backgroundColor: "#4CAF50",
+    color: "white",
+    border: "none",
+    cursor: "pointer"
+  },
+
+  footer: {
+    marginTop: "50px",
+    padding: "20px",
+    backgroundColor: "#1B5E20",
+    color: "white",
+    textAlign: "center"
+  },
+
+  creditos: {
+    marginTop: "10px",
+    fontSize: "14px"
+  },
+
+  info: {
+    marginTop: "15px",
+    fontSize: "14px",
+    lineHeight: "1.6"
+  }
+};
+
+export default FormularioUsuario;
+
