@@ -1,0 +1,6 @@
+1. Sin CREATE DATABASE — En Supabase ya existe una base de datos llamada postgres. En su lugar, usas un SCHEMA para organizar tus tablas por proyecto.
+2. int → uuid para los IDs — Supabase trabaja con UUIDs por defecto, y se integran mejor con su sistema de autenticación y Row Level Security (RLS).
+3. varchar(50) → text — En PostgreSQL, text es preferible para campos de longitud variable. varchar(50) solo tiene sentido si realmente necesitas limitar a exactamente 50 caracteres.
+4. contraseña → contrasena — Evita caracteres especiales (ñ, acentos) en nombres de columnas para prevenir errores de encoding.
+5. Llaves foráneas — Las tablas comentarios y recomendaciones ahora se conectan con usuarios, lo cual es fundamental para que la base de datos tenga coherencia.
+6. estado como ENUM — En vez de texto libre, defines exactamente qué valores son válidos.

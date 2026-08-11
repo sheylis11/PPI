@@ -1,0 +1,13 @@
+Correcciones y mejoras aplicadas
+1. CREATE DATABASE — eliminado
+En Supabase no se usa. Cada proyecto ya tiene su propia base de datos. Ejecutas todo desde el SQL Editor de Supabase.
+2. id INT PRIMARY KEY → id SERIAL PRIMARY KEY
+SERIAL es el autoincremental de PostgreSQL (equivalente a AUTO_INCREMENT en MySQL). Sin esto, tendrías que insertar el id manualmente en cada fila.
+3. contraseña → contrasena
+La ñ puede causar errores de encoding en algunos entornos. Es buena práctica usar solo caracteres ASCII en nombres de columnas.
+4. VARCHAR(50) para contraseña → VARCHAR(255)
+Las contraseñas se almacenan como hash (bcrypt, etc.) y estos tienen más de 50 caracteres. Con 50 se truncarían.
+5. Relaciones agregadas (REFERENCES)
+comentarios y recomendaciones ahora tienen usuario_id para vincularlas a la tabla usuario. Sin esto, las tablas estarían completamente aisladas y no podrías saber qué usuario hizo cada comentario o recomendación.
+6. DEFAULT 'pendiente' en recomendaciones.estado
+Valor por defecto útil para no tener que enviarlo siempre al insertar.
