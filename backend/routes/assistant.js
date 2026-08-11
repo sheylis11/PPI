@@ -1,48 +1,74 @@
 const express = require('express');
-const Anthropic = require('@anthropic-ai/sdk');
+const Groq = require('groq-sdk');
 
 const router = express.Router();
 
-const SYSTEM_PROMPT = `Eres el asistente virtual de "Animemos Nuestro Metro", un espacio de acompañamiento
-emocional para usuarios del Metro de Medellín. Tu tono es cálido, cercano y respetuoso.
+const SYSTEM_PROMPT = `Eres el asistente virtual de "Animemos Nuestro Metro", un espacio de acompañamiento emocional para usuarios y trabajadores del Metro de Medellín.
+
+Tu tono es cálido, cercano, respetuoso y natural. Habla siempre en español de Colombia.
 
 Reglas importantes:
 - NO eres un psicólogo ni un médico. No das diagnósticos ni indicaciones clínicas.
-- Si la persona menciona ideas de hacerse daño, de suicidio, o una crisis emocional grave,
-  responde con calma, valida lo que siente, y anímala de inmediato a llamar a la Línea de
-  Emergencia 123 o a escribir al WhatsApp de acompañamiento. No la dejes sin una salida concreta.
-- Para malestar cotidiano (ansiedad leve, estrés, tristeza) puedes ofrecer compañía, técnicas de
-  respiración simples (como la 4-7-8) y palabras de aliento.
-- Sé breve (máximo 4-5 frases por respuesta) y habla en español de Colombia.
-- Nunca minimices lo que la persona siente.`;
+- Puedes escuchar, conversar y brindar orientación emocional general.
+- Para ansiedad leve, estrés, tristeza o preocupación cotidiana puedes ofrecer compañía y ejercicios sencillos de respiración.
+- Nunca minimices lo que la persona siente.
+- No inventes información sobre el Metro de Medellín.
+- Si no sabes algo, dilo claramente.
+- Sé breve y natural: máximo 4-5 frases por respuesta.
+- Puedes hacer preguntas sencillas para comprender mejor cómo se siente la persona.
+- Si la persona menciona ideas de hacerse daño, suicidio o una crisis emocional grave, valida lo que siente y recomienda buscar ayuda inmediata de una persona de confianza y contactar los servicios de emergencia de su zona.
+- No prometas confidencialidad absoluta ni digas que reemplazas a un profesional.
+
+El objetivo es que la persona se sienta escuchada y acompañada.`;
 
 router.post('/chat', async (req, res) => {
   try {
-    if (!process.env.ANTHROPIC_API_KEY) {
+    if (!process.env.GROQ_API_KEY) {
       return res.status(503).json({
-        error: 'El asistente de IA no está configurado todavía. Agrega ANTHROPIC_API_KEY en el archivo .env del backend.'
+        error: 'El asistente de IA no está configurado todavía.'
       });
     }
 
     const { messages } = req.body;
+
     if (!Array.isArray(messages) || messages.length === 0) {
-      return res.status(400).json({ error: 'Falta el mensaje del usuario.' });
+      return res.status(400).json({
+        error: 'Falta el mensaje del usuario.'
+      });
     }
 
-    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 400,
-      system: SYSTEM_PROMPT,
-      messages: messages.map((m) => ({ role: m.role, content: m.content }))
+    const groq = new Groq({
+      apiKey: process.env.GROQ_API_KEY
     });
 
-    const textBlock = response.content.find((c) => c.type === 'text');
-    res.json({ reply: textBlock ? textBlock.text : 'No pude generar una respuesta, intenta de nuevo.' });
+    const response = await groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        {
+          role: 'system',
+          content: SYSTEM_PROMPT
+        },
+        ...messages.map((m) => ({
+          role: m.role === 'assistant' ? 'assistant' : 'user',
+          content: String(m.content)
+        }))
+      ],
+      temperature: 0.7,
+      max_tokens: 400
+    });
+
+    const reply =
+      response.choices?.[0]?.message?.content ||
+      'No pude generar una respuesta. Intenta de nuevo.';
+
+    res.json({ reply });
+
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error del servidor al hablar con el asistente de IA.' });
+    console.error('ERROR IA GROQ:', err);
+
+    res.status(500).json({
+      error: 'Error del servidor al hablar con el asistente de IA.'
+    });
   }
 });
 

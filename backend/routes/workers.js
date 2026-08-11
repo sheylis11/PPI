@@ -94,9 +94,15 @@ router.post('/report', requireAuth(['worker']), async (req, res) => {
       report
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error del servidor al enviar el reporte.' });
-  }
+  console.error('ERROR COMPLETO AL ENVIAR REPORTE:', err);
+  console.error('MENSAJE:', err.message);
+  console.error('STACK:', err.stack);
+
+  res.status(500).json({
+    error: 'Error del servidor al enviar el reporte.',
+    detail: err.message
+  });
+}
 });
 
 module.exports = router;
