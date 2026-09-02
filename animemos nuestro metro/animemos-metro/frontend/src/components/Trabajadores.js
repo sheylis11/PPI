@@ -18,6 +18,7 @@ export default function Trabajadores({ onOpenWorkerAuth }) {
   const [form, setForm] = useState({
     workerName: session?.name || '',
     station: '',
+    reportDate: '',
     problemType: PROBLEM_TYPES[0],
     urgency: 'media',
     description: '',
@@ -75,6 +76,10 @@ export default function Trabajadores({ onOpenWorkerAuth }) {
               <div className="col-md-6">
                 <label className="form-label">Estación / cargo</label>
                 <input className="form-control" required placeholder="Ej: Estación San Antonio, operador de andén" value={form.station} onChange={(e) => update('station', e.target.value)} />
+              </div>
+              <div className="col-md-6">
+                <label className="form-label">Fecha del reporte</label>
+                <input className="form-control" type="date" required value={form.reportDate} onChange={(e) => update('reportDate', e.target.value)} />
               </div>
               <div className="col-md-6">
                 <label className="form-label">Tipo de problema</label>

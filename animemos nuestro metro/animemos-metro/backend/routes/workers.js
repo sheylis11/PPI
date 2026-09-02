@@ -67,15 +67,16 @@ router.post('/login', async (req, res) => {
 // y se envía un correo real a AyudaMetroMedellin@gmail.com.
 router.post('/report', requireAuth(['worker']), async (req, res) => {
   try {
-    const { workerName, station, problemType, description, urgency, contact } = req.body;
-    if (!workerName || !station || !problemType || !description) {
-      return res.status(400).json({ error: 'Nombre, estación, tipo de problema y descripción son obligatorios.' });
+    const { workerName, station, reportDate, problemType, description, urgency, contact } = req.body;
+    if (!workerName || !station || !reportDate || !problemType || !description) {
+      return res.status(400).json({ error: 'Nombre, estación, fecha, tipo de problema y descripción son obligatorios.' });
     }
 
     const report = await Report.create({
       workerId: req.user.id,
       workerName,
       station,
+      reportDate,
       problemType,
       description,
       urgency: urgency || 'media',

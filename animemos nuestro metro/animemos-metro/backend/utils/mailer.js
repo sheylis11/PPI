@@ -23,6 +23,7 @@ async function sendReportEmail(report) {
     <h2>Nuevo reporte de un trabajador del Metro</h2>
     <p><strong>Nombre:</strong> ${report.workerName}</p>
     <p><strong>Cargo / Estación:</strong> ${report.station}</p>
+    <p><strong>Fecha del reporte:</strong> ${report.reportDate}</p>
     <p><strong>Tipo de problema:</strong> ${report.problemType}</p>
     <p><strong>Urgencia:</strong> ${report.urgency}</p>
     <p><strong>Descripción:</strong></p>
