@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import AhorcadoEmociones from './AhorcadoEmociones';
 import api, { WHATSAPP_LINK } from '../api';
 import { useAuth } from '../context/AuthContext';
 
@@ -130,11 +131,18 @@ export default function ParaUsuarios() {
           <button className={`anm-tab ${tab === 'cancion' ? 'active' : ''}`} onClick={() => setTab('cancion')}>Pide una canción</button>
           <button className={`anm-tab ${tab === 'aprende' ? 'active' : ''}`} onClick={() => setTab('aprende')}>Aprende y entiende</button>
           <button className={`anm-tab ${tab === 'actividades' ? 'active' : ''}`} onClick={() => setTab('actividades')}>Actividades en el metro</button>
+<button
+  className={`anm-tab ${tab === 'ahorcado' ? 'active' : ''}`}
+  onClick={() => setTab('ahorcado')}
+>
+   💭 Adivina la emoción
+</button>
         </div>
 
         {tab === 'cancion' && <MusicTab />}
         {tab === 'aprende' && <AprendeTab />}
         {tab === 'actividades' && <ActividadesTab />}
+        {tab === 'ahorcado' && <AhorcadoEmociones />}
 
         <div className="text-center mt-5">
           <p className="anm-empower-big">Eres más fuerte de lo que crees.</p>

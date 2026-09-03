@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Worker = require('../models/Worker');
 const Report = require('../models/Report');
+const supabase = require('../supabase');
 const { requireAuth } = require('../middleware/auth');
 const { sendReportEmail } = require('../utils/mailer');
 const allowedEmployees = require('../allowedEmployees');
@@ -82,7 +83,27 @@ router.post('/report', requireAuth(['worker']), async (req, res) => {
       urgency: urgency || 'media',
       contact: contact || ''
     });
+const { data: supabaseReport, error: supabaseError } = await supabase
+  .from('reports')
+  .insert({
+    name: workerName,
+    station_or_role: station,
+    problem_type: problemType,
+    urgency: urgency || 'media',
+    description,
+    contact: contact || null,
+    report_date: `${reportDate}T00:00:00`
+  })
+  .select()
+  .single();
 
+if (supabaseError) {
+  console.error('ERROR SUPABASE:', supabaseError);
+  return res.status(500).json({
+    error: 'El reporte se guardó en el sistema, pero no pudo guardarse en Supabase.',
+    detail: supabaseError.message
+  });
+}
     const mailResult = await sendReportEmail(report);
     report.mailSent = mailResult.sent;
     await report.save();

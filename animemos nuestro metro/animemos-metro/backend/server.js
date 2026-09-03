@@ -8,7 +8,7 @@ const workerRoutes = require('./routes/workers');
 const musicRoutes = require('./routes/music');
 const commentRoutes = require('./routes/comments');
 const assistantRoutes = require('./routes/assistant');
-
+const someoneReportsRoutes = require('./routes/someoneReports');
 const app = express();
 
 app.use(cors());
@@ -19,6 +19,7 @@ app.get('/api/health', (req, res) => res.json({ ok: true, name: 'Animemos Nuestr
 app.use('/api/auth', authRoutes);
 app.use('/api/workers', workerRoutes);
 app.use('/api/music', musicRoutes);
+app.use('/api/someone-reports', someoneReportsRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/assistant', assistantRoutes);
 

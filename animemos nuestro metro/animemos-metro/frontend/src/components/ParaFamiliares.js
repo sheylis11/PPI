@@ -1,7 +1,67 @@
-import React from 'react';
-import { WHATSAPP_LINK } from '../api';
+import React, { useState } from 'react';
+import api, { WHATSAPP_LINK } from '../api';
 
 export default function ParaFamiliares() {
+  const PROBLEM_TYPES = [
+    'Bienestar emocional',
+    'Situación de riesgo',
+    'Ansiedad, tristeza o angustia',
+    'Problema personal o familiar',
+    'Acoso o comportamiento inapropiado',
+    'Otra situación'
+  ];
+
+  const [form, setForm] = useState({
+    name: '',
+    relationship: '',
+    reportDate: '',
+    problemType: PROBLEM_TYPES[0],
+    description: '',
+    phone: '',
+    email: ''
+  });
+
+  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  function update(field, value) {
+    setForm((current) => ({
+      ...current,
+      [field]: value
+    }));
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setStatus(null);
+
+    try {
+      const res = await api.post('/someone-reports', form);
+
+      setStatus({
+        ok: true,
+        msg: res.data.message
+      });
+
+      setForm({
+        name: '',
+        relationship: '',
+        reportDate: '',
+        problemType: PROBLEM_TYPES[0],
+        description: '',
+        phone: '',
+        email: ''
+      });
+    } catch (err) {
+      setStatus({
+        ok: false,
+        msg: err.response?.data?.error || 'No se pudo registrar la situación.'
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <section id="para-familiares" className="py-5 anm-familiares-bg">
       <div className="container">
@@ -55,6 +115,109 @@ export default function ParaFamiliares() {
           <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer" className="btn anm-btn-primary-alt">
             Habla con un profesional
           </a>
+        </div>
+        <div className="mt-5">
+          <div className="anm-fam-panel">
+            <h4>¿Vienes por alguien?</h4>
+            <p>
+              Si estás aquí para acompañar a otra persona, puedes registrar
+              una situación para que podamos conocer lo que está pasando.
+            </p>
+
+            {status && (
+              <div className={`alert ${status.ok ? 'alert-success' : 'alert-danger'}`}>
+                {status.msg}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="row g-3">
+              <div className="col-md-6">
+                <label className="form-label">Tu nombre</label>
+                <input
+                  className="form-control"
+                  required
+                  value={form.name}
+                  onChange={(e) => update('name', e.target.value)}
+                />
+              </div>
+
+              <div className="col-md-6">
+                <label className="form-label">¿Por quién vienes?</label>
+                <input
+                  className="form-control"
+                  required
+                  placeholder="Ej: amigo, familiar, compañero"
+                  value={form.relationship}
+                  onChange={(e) => update('relationship', e.target.value)}
+                />
+              </div>
+
+              <div className="col-md-6">
+                <label className="form-label">Fecha del reporte</label>
+                <input
+                  className="form-control"
+                  type="date"
+                  required
+                  value={form.reportDate}
+                  onChange={(e) => update('reportDate', e.target.value)}
+                />
+              </div>
+
+              <div className="col-md-6">
+                <label className="form-label">¿Cuál es el asunto o problema?</label>
+                <select
+                  className="form-select"
+                  value={form.problemType}
+                  onChange={(e) => update('problemType', e.target.value)}
+                >
+                  {PROBLEM_TYPES.map((problem) => (
+                    <option key={problem}>{problem}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="col-12">
+                <label className="form-label">Cuéntanos qué está pasando</label>
+                <textarea
+                  className="form-control"
+                  rows={4}
+                  required
+                  value={form.description}
+                  onChange={(e) => update('description', e.target.value)}
+                />
+              </div>
+
+              <div className="col-md-6">
+                <label className="form-label">Celular (opcional)</label>
+                <input
+                  className="form-control"
+                  type="tel"
+                  value={form.phone}
+                  onChange={(e) => update('phone', e.target.value)}
+                />
+              </div>
+
+              <div className="col-md-6">
+                <label className="form-label">Correo electrónico (opcional)</label>
+                <input
+                  className="form-control"
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => update('email', e.target.value)}
+                />
+              </div>
+
+              <div className="col-12">
+                <button
+                  type="submit"
+                  className="btn anm-btn-primary-alt"
+                  disabled={loading}
+                >
+                  {loading ? 'Registrando...' : 'Registrar situación'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </section>

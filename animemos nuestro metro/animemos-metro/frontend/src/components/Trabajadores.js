@@ -26,7 +26,25 @@ export default function Trabajadores({ onOpenWorkerAuth }) {
   });
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
+   const [someoneReports, setSomeoneReports] = useState([]);
+  const [reportsLoading, setReportsLoading] = useState(false);
+  const [reportsError, setReportsError] = useState(null);
 
+  async function loadSomeoneReports() {
+    setReportsLoading(true);
+    setReportsError(null);
+
+    try {
+      const res = await api.get('/someone-reports');
+      setSomeoneReports(res.data.reports || []);
+    } catch (err) {
+      setReportsError(
+        err.response?.data?.error || 'No se pudieron cargar los reportes.'
+      );
+    } finally {
+      setReportsLoading(false);
+    }
+  }
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
   }
@@ -109,6 +127,59 @@ export default function Trabajadores({ onOpenWorkerAuth }) {
                 </button>
               </div>
             </form>
+            <div className="mt-5">
+              <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                  <h3>Reportes registrados</h3>
+                  <p className="mb-0">
+                    Aquí puedes consultar las situaciones reportadas por familiares.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  className="btn anm-btn-primary"
+                  onClick={loadSomeoneReports}
+                  disabled={reportsLoading}
+                >
+                  {reportsLoading ? 'Cargando...' : 'Ver reportes'}
+                </button>
+              </div>
+
+              {reportsError && (
+                <div className="alert alert-danger mt-3">
+                  {reportsError}
+                </div>
+              )}
+
+              {someoneReports.length > 0 && (
+                <div className="mt-4">
+                  <div className="alert alert-info">
+                    Total de reportes: <strong>{someoneReports.length}</strong>
+                  </div>
+
+                  <div className="row g-4">
+                    {someoneReports.map((report, index) => (
+                      <div className="col-12" key={report.id}>
+                        <div className="p-4 border rounded">
+                          <h4>
+                            Reporte #{String(index + 1).padStart(3, '0')}
+                          </h4>
+
+                          <p><strong>Nombre:</strong> {report.name}</p>
+                          <p><strong>¿Por quién viene?</strong> {report.relationship}</p>
+                          <p><strong>Fecha:</strong> {report.report_date?.slice(0, 10)}</p>
+                          <p><strong>Problema:</strong> {report.problem_type}</p>
+                          <p><strong>Descripción:</strong> {report.description}</p>
+                          <p><strong>Celular:</strong> {report.phone || 'No registrado'}</p>
+                          <p className="mb-0"><strong>Correo:</strong> {report.email || 'No registrado'}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
