@@ -1,129 +1,187 @@
-# Animemos Nuestro Metro — App funcional (React + Bootstrap + Node/Express + MongoDB)
+# Animemos Nuestro Metro
 
-Dos partes que corren juntas:
+Animemos Nuestro Metro es una aplicación web para apoyar la comunidad del Metro de Medellín mediante canales de comunicación, reportes de situaciones, interacción con música y comentarios, acceso a recursos de la comunidad y acompañamiento emocional a través de un asistende virtual de IA.
 
-- **backend/** → API real en Node/Express + MongoDB (registro de usuarios y trabajadores,
-  reportes con envío de correo real, música, comentarios, asistente de IA).
-- **frontend/** → App en React + Bootstrap que consume esa API.
+La plataforma está organizada en dos partes: un backend con API REST en Node.js y Express, y un frontend en React con Bootstrap para consumir esa API.
 
-La base de datos usa **MongoDB Atlas**, así que los datos no se borran al reiniciar el
-servidor y quedan guardados en internet de verdad.
+## Descripción
 
-## 1. Crea tu base de datos (MongoDB Atlas — gratis)
+Animemos Nuestro Metro busca ofrecer un espacio seguro y cercano para que usuarios, familiares y trabajadores del metro puedan comunicar necesidades, registrar reportes, participar en comunidad y encontrar recursos de apoyo.
 
-1. Entra a https://www.mongodb.com/cloud/atlas/register y crea una cuenta gratis.
-2. Crea un cluster gratuito (plan **M0**).
-3. En "Database Access", crea un usuario con contraseña (guárdala).
-4. En "Network Access", agrega la IP `0.0.0.0/0` ("Allow access from anywhere") — así tu
-   backend en Render podrá conectarse sin problema.
-5. En "Database" → "Connect" → "Drivers", copia el string de conexión. Se ve así:
-   `mongodb+srv://usuario:<password>@cluster0.xxxxx.mongodb.net/`
-   Reemplaza `<password>` por la contraseña real y agrégale el nombre de la base al final:
-   `mongodb+srv://usuario:tuclave@cluster0.xxxxx.mongodb.net/animemos-metro`
+La aplicación permite:
 
-## 2. Backend
+- registrar usuarios y trabajadores,
+- gestionar autenticación con tokens JWT,
+- publicar y consultar música y comentarios,
+- registrar reportes de situaciones familiares o del personal del metro,
+- enviar algunos reportes por correo,
+- interactuar con un asistende basado en Groq.
+
+## Funcionalidades principales
+
+- Registro e inicio de sesión de usuarios.
+- Registro e inicio de sesión de trabajadores con código de acceso.
+- Envío y consulta de reportes por parte de trabajadores y usuarios.
+- Consulta de reportes de situaciones para el equipo del metro.
+- Registro de comentarios y música de la comunidad.
+- Chat con un asistende virtual para acompañamiento emocional.
+- Integración con Supabase para almacenamiento de reportes de alguien.
+- Envío de reportes por correo con Nodemailer.
+
+## Tecnologías utilizadas
+
+- React
+- Bootstrap
+- JavaScript
+- Node.js
+- Express
+- MongoDB
+- Mongoose
+- Supabase
+- @supabase/supabase-js
+- Nodemailer
+- JWT
+- bcryptjs
+- dotenv
+- npm
+- Groq SDK
+
+## Estructura del proyecto
+
+La aplicación está dividida en dos proyectos principales:
+
+```text
+animemos nuestro metro/
+└── animemos-metro/
+    ├── backend/
+    │   ├── models/
+    │   ├── routes/
+    │   ├── services/
+    │   ├── utils/
+    │   ├── middleware/
+    │   └── server.js
+    ├── frontend/
+    │   └── src/
+    └── README.md
+```
+
+### Backend
+
+El backend está en la carpeta `backend/` y contiene la API de Express, la conexión a MongoDB, las rutas de autenticación, trabajadores, música, comentarios, reportes y el asistende IA.
+
+### Frontend
+
+El frontend está en la carpeta `frontend/` y contiene la interfaz principal en React con Bootstrap. Los componentes principales viven en `frontend/src/components/` y el contexto de autenticación en `frontend/src/context/`.
+
+## Requisitos
+
+Antes de ejecutar el proyecto, necesitas:
+
+- Node.js y npm instalados.
+- Acceso a un proyecto de MongoDB Atlas o una base MongoDB configurada.
+- Cuenta de correo para envío de reportes por correo electrónico.
+- Una cuenta o proyecto de Supabase con las tablas necesarias para `someone_reports`.
+- Una clave API de Groq para el asistende virtual.
+- Git para clonar el repositorio.
+
+## Instalación
+
+Desde la raíz del repositorio:
+
+```bash
+git clone https://github.com/sheylis11/PPI.git
+cd PPI
+cd "animemos nuestro metro/animemos-metro"
+```
+
+Instala las dependencias del backend:
 
 ```bash
 cd backend
 npm install
-cp .env.example .env
 ```
 
-Abre `.env` y llena:
-
-- `MONGODB_URI`: el string de conexión que copiaste de Atlas.
-- `JWT_SECRET`: cualquier cadena larga inventada por ti.
-- `EMAIL_USER` / `EMAIL_PASS`: la cuenta de Gmail que **enviará** los reportes.
-  Necesitas una **"Contraseña de aplicación"** de Gmail:
-  1. Ve a tu cuenta de Google → Seguridad.
-  2. Activa la verificación en 2 pasos.
-  3. Busca "Contraseñas de aplicaciones" y genera una para "Correo".
-  4. Pega esa contraseña de 16 caracteres en `EMAIL_PASS` (NO tu contraseña normal).
-- `EMAIL_TO`: déjalo en `AyudaMetroMedellin@gmail.com` — ahí llegan los reportes.
-- `WORKER_ACCESS_CODE`: el código único que va a compartir todo el personal del Metro para
-  entrar (en vez de que cada uno cree su propia contraseña). Cámbialo por algo que solo tu
-  equipo conozca, ej: `Metro2026*`. El trabajador entra con su nombre + su correo normal +
-  este código.
-- `ANTHROPIC_API_KEY`: crea tu API key en https://console.anthropic.com/ para que el
-  asistente de IA responda de verdad. Si la dejas vacía, el chat le avisa al usuario que no
-  está disponible en vez de inventar respuestas falsas.
-
-### Agregar o quitar trabajadores autorizados
-
-Solo las personas cuyo número de documento esté en `backend/allowedEmployees.js` pueden
-registrarse como trabajadoras/es del Metro (así nadie externo se puede hacer pasar por
-personal). Ya quedaron cargadas las 3 que me diste. Para agregar a alguien más, abre ese
-archivo y copia una línea, cambiando los datos:
-
-```js
-{ name: 'Nombre completo', idType: 'Tipo de documento', idNumber: '123456789' },
-```
-
-Guarda el archivo y reinicia el backend (o vuelve a desplegarlo en Render si ya está en línea).
-
-Pobla la base de datos con algunas canciones y comentarios iniciales (opcional, solo una vez):
+Instala las dependencias del frontend:
 
 ```bash
-npm run seed
+cd ../frontend
+npm install
 ```
 
-Levanta el servidor:
+## Variables de entorno
+
+El proyecto usa un archivo `.env` dentro de la carpeta `backend` para configurar la API.
+
+No escribas claves reales ni secretos dentro de este README. Usa solo nombres de variables y ejemplos.
+
+Ejemplo de configuración:
+
+```env
+PORT=4000
+MONGODB_URI=tu_valor
+JWT_SECRET=tu_valor
+EMAIL_USER=tu_valor
+EMAIL_PASS=tu_valor
+EMAIL_TO=tu_valor
+WORKER_ACCESS_CODE=tu_valor
+SUPABASE_URL=tu_valor
+SUPABASE_SERVICE_ROLE_KEY=tu_valor
+GROQ_API_KEY=tu_valor
+```
+
+El frontend también puede usar variables de entorno según el despliegue, por ejemplo:
+
+```env
+REACT_APP_API_URL=http://localhost:4000/api
+REACT_APP_WHATSAPP_NUMBER=573045217695
+```
+
+## Ejecución
+
+### Backend
+
+El backend se inicia con:
 
 ```bash
+cd backend
 npm start
 ```
 
-Debe quedar corriendo en `http://localhost:4000`.
+El servidor queda disponible en:
 
-## 3. Frontend
+```text
+http://localhost:4000
+```
 
-En otra terminal:
+### Frontend
+
+El frontend se inicia con:
 
 ```bash
 cd frontend
-npm install
-cp .env.example .env
 npm start
 ```
 
-Se abre en `http://localhost:3000`, ya consumiendo la API real.
+La aplicación se expone en el puerto 3000 por react-scripts.
 
-## 4. Publicarlo en internet (para que cualquiera lo use, no solo tú)
+## Uso
 
-**Backend en Render (gratis):**
-1. Sube el proyecto a GitHub (en Visual Studio: panel de Control de código fuente → Publish to GitHub).
-2. En render.com → New → Web Service → conecta tu repo → Root Directory: `backend`.
-3. Build Command: `npm install` — Start Command: `npm start`.
-4. En "Environment", agrega las mismas variables de tu `.env` (MONGODB_URI, JWT_SECRET,
-   EMAIL_USER, EMAIL_PASS, EMAIL_TO, ANTHROPIC_API_KEY).
-5. Render te da una URL pública, ej: `https://animemos-metro-backend.onrender.com`.
+1. Inicia el backend y luego el frontend.
+2. Abre la interfaz en el navegador.
+3. Registra o inicia sesión como usuario o trabajador.
+4. Usa la sección de música y comentarios para interactuar con la comunidad.
+5. Desde la sección de trabajadores puedes enviar reportes.
+6. Desde la sección de familiares puedes enviar reportes de terceros.
+7. Usa el asistende virtual desde la interfaz para conversar con la aplicación.
 
-**Frontend en Vercel (gratis):**
-1. En vercel.com → Add New → Project → conecta el mismo repo → Root Directory: `frontend`.
-2. En "Environment Variables" agrega `REACT_APP_API_URL` = tu URL de Render + `/api`
-   (ej: `https://animemos-metro-backend.onrender.com/api`) y `REACT_APP_WHATSAPP_NUMBER` = `573045217695`.
-3. Deploy. Vercel te da una URL pública, ej: `https://animemos-metro.vercel.app`.
+## Autores
 
-Nota: el plan gratis de Render "duerme" el backend tras 15 min sin uso — la primera petición
-después tarda 30-50 segundos en despertar. Es normal en el plan gratuito.
+Los nombres que aparecen en la lista autorizada de trabajadores del proyecto son:
 
-## Qué es real y qué necesitas configurar
+- Roxelys De los Ángeles Bravo Castro
+- Sheyla Tirado Aguiar
+- Dana Gomez Gomez
 
-| Función | Estado |
-|---|---|
-| Base de datos | Real y persistente, en MongoDB Atlas |
-| Registro/login de usuarios | Real, contraseña encriptada, sesión con token |
-| Registro/login de trabajadores del Metro | Real, cada trabajador con su propia cuenta y contraseña, más su código de empleado |
-| Formulario de reporte del trabajador | Real: se guarda en MongoDB **y** se envía por correo a `AyudaMetroMedellin@gmail.com` (necesitas configurar `EMAIL_USER`/`EMAIL_PASS`) |
-| Pedir canciones y darles "corazón" | Real, guardado en MongoDB |
-| Comentarios de la comunidad | Real, guardado en MongoDB |
-| Botones "Habla con alguien" / "Pide ayuda ahora" / "Habla con un profesional" | Abren tu WhatsApp: +57 304 5217695 |
-| Línea "Emergencia 123" | Marca directo al 123 (se dejó así por ser la línea real de emergencias) |
-| Asistente de IA | Real, usa la API de Anthropic — necesitas tu propia `ANTHROPIC_API_KEY`. Redirige a la línea 123 o al WhatsApp si detecta una crisis, y aclara que no reemplaza ayuda profesional |
+## Licencia
 
-## Notas importantes
-
-- Nunca subas tu archivo `.env` (con contraseñas reales) a un repositorio público — el
-  `.gitignore` ya lo excluye.
-- Con el tiempo, si el proyecto crece mucho, puedes pasar del plan gratuito M0 de Atlas y del
-  plan gratuito de Render a planes pagos para más capacidad y sin "dormir" el servidor.
+Este proyecto se entrega con fines educativos y de práctica académica.
